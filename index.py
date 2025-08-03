@@ -2,22 +2,36 @@ from google import genai
 import os
 import serial
 import time
+import random
 
 client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 ser = serial.Serial(
-    port='COM3',  # 장치관리자에서 확인해서 포트 번호는 수정할 것.
+    port='COM5',  # 장치관리자에서 확인해서 포트 번호는 수정할 것.
     baudrate=115200,
     timeout=1
 )
+print("1 입력")
+time.sleep(1)
+ser.write(b'1')
+time.sleep(1)
+print("전송 완료")
 
-while True:
-    user_input = input("Enter your command: ")
-    if user_input.lower() == "exit":
-        break
-    response = client.models.generate_content(
-        model="gemini-2.5-flash-lite",
-        contents=user_input
-    )
-    print(f"You entered: {user_input}")
-    print(response.candidates[0].content.parts[0].text)
-    ser.write(response.candidates[0].content.parts[0].text.encode('utf-8'))
+# random.seed(time.time())
+# random_number = random.randint(1, 5)
+# print("processing...")
+# time.sleep(1)
+# ser.write(random_number.to_bytes(1, 'big'))
+# time.sleep(1)
+# print(f"Sent random number: {random_number}")
+
+# while True:
+#     user_input = input("Enter your command: ")
+#     if user_input.lower() == "exit":
+#         break
+#     response = client.models.generate_content(
+#         model="gemini-2.5-flash-lite",
+#         contents=user_input
+#     )
+#     print(f"You entered: {user_input}")
+#     print(response.candidates[0].content.parts[0].text)
+#     ser.write(response.candidates[0].content.parts[0].text.encode('utf-8'))
