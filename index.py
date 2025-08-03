@@ -10,19 +10,14 @@ ser = serial.Serial(
     baudrate=115200,
     timeout=1
 )
-print("1 입력")
-time.sleep(1)
-ser.write(b'1')
-time.sleep(1)
-print("전송 완료")
 
-# random.seed(time.time())
-# random_number = random.randint(1, 5)
-# print("processing...")
-# time.sleep(1)
-# ser.write(random_number.to_bytes(1, 'big'))
-# time.sleep(1)
-# print(f"Sent random number: {random_number}")
+random.seed(time.time())
+random_number = random.randint(1, 5)
+print("processing..., sent", random_number)
+time.sleep(1)
+ser.write(random_number.to_bytes(1, 'big'))
+time.sleep(1)
+print(f"Sent random number: {random_number}")
 
 # while True:
 #     user_input = input("Enter your command: ")
