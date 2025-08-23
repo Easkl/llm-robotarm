@@ -43,10 +43,10 @@ while True:
     answer = response.choices[0].message.content
     outputHistory.append(answer)
     print(f"{Fore.YELLOW}{answer}{Style.RESET_ALL}")
-    lines = answer.strip().split("\n")
-    for line in lines:
-        ser.write((line + "\n").encode('utf-8'))
-        while True:
-            recv = ser.readline().decode('utf-8').strip()
-            if recv == "ok":
-                break
+    # lines = answer.strip().split("\n")
+    # for line in lines:
+    #     ser.write((line + "\n").encode('utf-8'))
+    #     while True:
+    #         recv = ser.readline().decode('utf-8').strip()
+    #         if recv == "ok":
+    #             break
