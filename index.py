@@ -1,4 +1,4 @@
-from google import genai
+import openai
 import os
 import serial
 import time
@@ -23,7 +23,7 @@ inputHistory = []
 #질문에 따른 출력값 history
 outputHistory = []
 
-client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
+client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 print("명령을 입력하세요. (종료하려면 exit 입력)")
 while True:
@@ -33,16 +33,20 @@ while True:
     inputHistory.append(user_input)
     input_text = "\n".join(inputHistory)
     output_text = "\n".join(outputHistory)
-    response = client.models.generate_content(
-        model="gemini-2.5-flash-lite",
-        contents=f"{rules}\n지금까지 내린 명령:\n{input_text}\n명령에 대한 LLM의 출력:\n{output_text}\n이번 명령: {user_input}"
+    response = client.chat.completions.create(
+        model="gpt-5",
+        messages=[
+            {"role": "system", "content": rules},
+            {"role": "user", "content": f"지금까지 내린 명령:\n{input_text}\n명령에 대한 LLM의 출력:\n{output_text}\n이번 명령: {user_input}"}
+        ]
     )
-    outputHistory.append(response.candidates[0].content.parts[0].text)
-    print(f"{Fore.YELLOW}{response.candidates[0].content.parts[0].text}{Style.RESET_ALL}")
-    lines = response.candidates[0].content.parts[0].text.strip().split("\n")
+    answer = response.choices[0].message.content
+    outputHistory.append(answer)
+    print(f"{Fore.YELLOW}{answer}{Style.RESET_ALL}")
+    lines = answer.strip().split("\n")
     for line in lines:
-        ser.write((line + "\n").encode('utf-8'))  # 명령 전송
+        ser.write((line + "\n").encode('utf-8'))
         while True:
             recv = ser.readline().decode('utf-8').strip()
             if recv == "ok":
-                break  # ok 받으면 다음 명령으로
+                break
