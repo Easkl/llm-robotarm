@@ -6,31 +6,11 @@ from colorama import Fore, Style, init
 init(autoreset=True)
 
 rules = """
-출력은 항상 G-code만. 설명/주석/빈 줄/특수문자 금지. 한 줄당 한 명령.
-
-입력 형식: rules → inputHistory → outputHistory → question. 상태 기억은 하지 않으므로 항상 inputHistory와 outputHistory로 문맥을 잇는다.
-
-캔버스: A4 세로, 단위 mm, 범위 0 ≤ X ≤ 210, 0 ≤ Y ≤ 297. 원점 (0,0)은 좌하단. 범위 밖 좌표는 가장자리로 클리핑.
-
-명령은 표준만 사용: G0, G1, G2, G3. Z축 사용 금지.
-
-G0는 펜 업 이동, G1/G2/G3는 펜 다운 그리기.
-
-F는 PWM duty로 사용(0~1000). 기본값: G0는 F1200, G1/G2/G3는 F800. 속도·진하기 요구가 있으면 F로만 조절.
-
-곡선·원·원호는 직선 근사 금지. 반드시 G2/G3 사용.
-
-전체 원은 시작점을 원 둘레의 임의 위치로 지정한 뒤 G2 또는 G3 한 바퀴로 출력. 컨트롤러가 한 바퀴 지원하지 않으면 동일 중심으로 반바퀴 두 번으로 분할.
-
-중심 지정은 I,J 오프셋 또는 R 사용. 기본은 I,J.
-
-닫힌 도형은 반드시 시작점으로 복귀하여 닫는다.
-
-경로 계획 시 G0 이동을 최소화하고 연속 경로 우선.
-
-좌표가 없는 추상 요구는 기본 크기 50mm, 캔버스 중앙 배치. 여러 개 요청 시 자동 배치로 겹침 방지.
-
-출력은 헤더 이후 G코드만 나열한다. 불필요한 공백, 설명, 특수문자, 비표준 코드는 비용 절감을 위해 금지.
+단위는 무조건 밀리미터(mm)로 고정한다. 원점은 (0,0)이며 이는 캔버스의 왼쪽 아래에 해당한다. 캔버스 크기는 297×210(mm)으로 고정한다. 좌표계는 절대좌표계만 사용한다.
+펜 업은 G0 Z5로 정의하며, 펜 다운은 G1 Z0으로 정의한다. 이동은 G0 X.. Y.. 형태로 하며 이는 펜이 올라간 상태에서만 사용한다. 그리기는 G1 X.. Y.. 형태로 하며 이는 펜이 내려간 상태에서만 사용한다. 원호는 선택적으로 사용할 수 있으며, 시계 방향은 G2 X.. Y.. I.. J.., 반시계 방향은 G3 X.. Y.. I.. J..로 정의한다. 여기서 I, J는 현재 위치에서 원 중심까지의 오프셋을 의미한다. 원호의 끝점 좌표가 시작점과 같을 경우 완전한 원으로 해석한다.
+한 줄에는 반드시 하나의 명령만 작성하며, 파라미터(X, Y, I, J, Z 등)는 같은 줄에 쓴다. 각 줄은 시리얼 통신을 통해 전송되며, 장비가 “ok”라는 응답을 반환한 뒤에만 다음 줄을 전송한다. 좌표는 항상 캔버스 범위(0 ≤ X ≤ 297, 0 ≤ Y ≤ 210) 안에서만 사용한다. 이 범위를 벗어나는 좌표는 오류로 처리하거나 클램핑한다.
+피드 속도(F), 공구 선택(T), 압출(E), 스핀들(M3/M5), 히터(M104/M140) 등은 사용하지 않는다. ARC 명령어에서 I=J=0은 금지한다.
+가장 중요하게, 출력 형식은 오직 G-code 명령어 줄만 나열하고, 어떤 경우에도 주석이나 설명은 포함하지 않는 규칙으로 고정
 """
 #그동안 했던 질문 기억용 리스트
 inputHistory = []
@@ -49,7 +29,7 @@ while True:
     output_text = "\n".join(outputHistory)
     response = client.models.generate_content(
         model="gemini-2.5-flash-lite",
-        contents=f"{rules}\n지금까지의 명령:\n{input_text}\n명령에 대한 결과값:\n{output_text}\n이번 명령: {user_input}"
+        contents=f"{rules}\n지금까지 내린 명령:\n{input_text}\n명령에 대한 LLM의 출력:\n{output_text}\n이번 명령: {user_input}"
     )
     outputHistory.append(response.candidates[0].content.parts[0].text)
     print(f"{Fore.YELLOW}{response.candidates[0].content.parts[0].text}{Style.RESET_ALL}")
