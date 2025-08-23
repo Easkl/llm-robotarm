@@ -7,9 +7,9 @@ import time
 from colorama import Fore, Style, init
 init(autoreset=True)
 
-ser = serial.Serial(port ='COM3', #장치관리자에서 포트는 매번 수정해줄 것.
-                    baudrate=115200, 
-                    timeout=1) 
+# ser = serial.Serial(port ='COM3', #장치관리자에서 포트는 매번 수정해줄 것.
+#                     baudrate=115200, 
+#                     timeout=1) 
 
 rules = """
 단위는 무조건 밀리미터(mm)로 고정한다. 원점은 (0,0)이며 이는 캔버스의 왼쪽 아래에 해당한다. 캔버스 크기는 297×210(mm)으로 고정한다. 좌표계는 절대좌표계만 사용한다.
