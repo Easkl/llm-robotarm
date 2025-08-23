@@ -1,9 +1,15 @@
 from google import genai
 import os
+import serial
+import time
 
 # 색상 출력을 위한 colorama 추가
 from colorama import Fore, Style, init
 init(autoreset=True)
+
+ser = serial.Serial(port ='COM3', #장치관리자에서 포트는 매번 수정해줄 것.
+                    baudrate=115200, 
+                    timeout=1) 
 
 rules = """
 단위는 무조건 밀리미터(mm)로 고정한다. 원점은 (0,0)이며 이는 캔버스의 왼쪽 아래에 해당한다. 캔버스 크기는 297×210(mm)으로 고정한다. 좌표계는 절대좌표계만 사용한다.
@@ -33,3 +39,10 @@ while True:
     )
     outputHistory.append(response.candidates[0].content.parts[0].text)
     print(f"{Fore.YELLOW}{response.candidates[0].content.parts[0].text}{Style.RESET_ALL}")
+    lines = response.candidates[0].content.parts[0].text.strip().split("\n")
+    for line in lines:
+        ser.write((line + "\n").encode('utf-8'))  # 명령 전송
+        while True:
+            recv = ser.readline().decode('utf-8').strip()
+            if recv == "ok":
+                break  # ok 받으면 다음 명령으로
