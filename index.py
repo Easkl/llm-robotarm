@@ -52,7 +52,5 @@ while True:
         continue
     outputHistory.append(answer)
     print(f"{Fore.YELLOW}{answer}{Style.RESET_ALL}")
-    lines = answer.strip().split("\n")
-    for line in lines:
-        ser.write((line + "\n").encode('utf-8'))
-        checkGcodeStatus(ser)
+    ser.write((answer + "\n").encode('utf-8'))  # 전체 명령을 한 번에 전송
+    checkGcodeStatus(ser)  # ok 받을 때까지 대기
