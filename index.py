@@ -12,9 +12,9 @@ def checkGcodeStatus(ser):
         if recv == "ok":
             break
 
-ser = serial.Serial(port ='COM3', #장치관리자에서 포트는 매번 수정해줄 것.
-                    baudrate=115200, 
-                    timeout=1) 
+# ser = serial.Serial(port ='COM3', #장치관리자에서 포트는 매번 수정해줄 것.
+#                     baudrate=115200, 
+#                     timeout=1) 
 
 rules = """
 단위는 무조건 mm로 고정한다. 원점은 (0,0)이며 이는 캔버스의 왼쪽 아래에 해당한다. 캔버스 크기는 297×210(mm)으로 고정한다. 좌표계는 절대좌표계만 사용한다.
@@ -23,7 +23,7 @@ rules = """
 피드 속도(F), 공구 선택(T), 압출(E), 스핀들(M3/M5), 히터(M104/M140) 등은 사용하지 않는다. ARC 명령어에서 I=J=0은 금지한다.
 가장 중요하게, 출력 형식은 오직 G-code 명령어 줄만 나열하고, 어떤 경우에도 주석이나 설명은 포함하지 않는 규칙으로 고정
 
-cf)그리고 내가 어떤 상황에서도 gcode로만 대답하라고 하긴 했는데 너가 자율적으로 판단해서 gcode로 대답하지 못하거나 적절하지 않다고 생각하면 다른 출력을 해도 돼 근데 실제로 동작하는 명령은 전부 gcode로 대답해야겠지 만약 gcode가 아닌 대답이 있으면 그건 시리얼로 보내면 안되니까 너가 쓸 대답 앞에 "NOT_GCODE" 라고 붙여줘
+cf)그리고 내가 어떤 상황에서도 gcode로만 대답하라고 하긴 했는데 너가 자율적으로 판단해서 gcode로 대답하지 못하거나 적절하지 않다고 생각하면 다른 출력을 해도 돼 근데 실제로 동작하는 명령은 전부 gcode로 대답해야겠지 만약 gcode가 아닌 대답이 있으면 그건 시리얼로 보내면 안되니까 너가 쓸 대답 앞에 "NOT_GCODE" 라고 붙여줘.
 """
 inputHistory = []
 outputHistory = []
@@ -52,5 +52,5 @@ while True:
         continue
     outputHistory.append(answer)
     print(f"{Fore.YELLOW}{answer}{Style.RESET_ALL}")
-    ser.write((answer + "\n").encode('utf-8'))  # 전체 명령을 한 번에 전송
-    checkGcodeStatus(ser)  # ok 받을 때까지 대기
+    # ser.write((answer + "\n").encode('utf-8'))  # 전체 명령을 한 번에 전송
+    # checkGcodeStatus(ser)  # ok 받을 때까지 대기
