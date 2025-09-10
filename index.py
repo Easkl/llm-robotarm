@@ -6,15 +6,15 @@ from colorama import Fore, Style, init
 
 init(autoreset=True)
 
-def checkGcodeStatus(ser):
-    while True:
-        recv = ser.readline().decode('utf-8').strip()
-        if recv == "ok":
-            break
+# def checkGcodeStatus(ser):
+#     while True:
+#         recv = ser.readline().decode('utf-8').strip()
+#         if recv == "ok":
+#             break
 
-ser = serial.Serial(port ='COM8', #장치관리자에서 포트는 매번 수정해줄 것.
-                    baudrate=115200, 
-                    timeout=None) 
+# ser = serial.Serial(port ='COM8', #장치관리자에서 포트는 매번 수정해줄 것.
+#                     baudrate=115200, 
+#                     timeout=None) 
 
 rules = """
 You are a G-code generator for a 2D plotter. Follow these rules strictly:
@@ -66,5 +66,5 @@ while True:
         continue
     outputHistory.append(answer)
     print(f"{Fore.YELLOW}{answer}{Style.RESET_ALL}")
-    ser.write((answer + "\n").encode('utf-8'))  # 전체 명령을 한 번에 전송
-    checkGcodeStatus(ser)  # ok 받을 때까지 대기
+    # ser.write((answer + "\n").encode('utf-8'))  # 전체 명령을 한 번에 전송
+    # checkGcodeStatus(ser)  # ok 받을 때까지 대기
