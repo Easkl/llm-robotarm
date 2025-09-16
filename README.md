@@ -1,4 +1,4 @@
-#### Advanced User Experience: Connecting LLMs to Physical Machines
+# Advanced User Experience: Connecting LLMs to Physical Machines
 
 ## 1. Program Installation
 
@@ -19,10 +19,13 @@ This project uses the ChatGPT API by default, but you can easily modify a few li
    cd path/to/your/project
    ```
 3. Set your LLM API key as an environment variable:
+
    ```
    set OPENAI_API_KEY=yourapikey
    ```
+
    _(On Mac/Linux, use `export OPENAI_API_KEY=yourapikey` instead.)_
+
 4. **Edit the serial port setting in `index.py`:**
    - Open `index.py` in a text editor.
    - Find the line that looks like `ser = serial.Serial('COMx', ...)` (Windows) or `'/dev/ttyUSBx'` (Mac/Linux).
