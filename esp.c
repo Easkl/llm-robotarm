@@ -24,6 +24,7 @@ AccelStepper rightStepper(AccelStepper::DRIVER, rightStepPin, rightDIRPin);
 AccelStepper leftStepper(AccelStepper::DRIVER, leftStepPin, leftDIRPin);
 
 void setup() {
+  Serial.begin(115200);
   rightStepper.setMaxSpeed(500);
   leftStepper.setMaxSpeed(500); 
   steppers.addStepper(rightStepper);  
@@ -189,28 +190,73 @@ void G3(int X,int Y,int I,int J) {
 }
 
 void loop() {
-  String buffer = Serial.readString();
-  char *line = strtok((char*)buffer.c_str(), "\n");
+  String buffer =
+    "G0 X183.5 Y60\n"
+    "G2 X183.5 Y60 I-35 J0\n"
+    "G0 X173.5 Y120\n"
+    "G2 X173.5 Y120 I-25 J0\n"
+    "G0 X166.5 Y163\n"
+    "G2 X166.5 Y163 I-18 J0\n"
+    "G0 X145 Y169\n"
+    "G2 X145 Y169 I-1.5 J0\n"
+    "G0 X155 Y169\n"
+    "G2 X155 Y169 I-1.5 J0\n"
+    "G0 X143 Y156\n"
+    "G2 X154 Y156 I5.5 J-3\n"
+    "G0 X149 Y163\n"
+    "G1 X160 Y160\n"
+    "G1 X149 Y166\n"
+    "G1 X149 Y163\n"
+    "G0 X123.5 Y120\n"
+    "G1 X100 Y140\n"
+    "G1 X105 Y136\n"
+    "G1 X95 Y145\n"
+    "G0 X105 Y136\n"
+    "G1 X95 Y130\n"
+    "G0 X173.5 Y120\n"
+    "G1 X200 Y140\n"
+    "G1 X195 Y136\n"
+    "G1 X205 Y145\n"
+    "G0 X195 Y136\n"
+    "G1 X205 Y130\n"
+    "G0 X150.5 Y132\n"
+    "G2 X150.5 Y132 I-2 J0\n"
+    "G0 X150.5 Y120\n"
+    "G2 X150.5 Y120 I-2 J0\n"
+    "G0 X150.5 Y108\n"
+    "G2 X150.5 Y108 I-2 J0\n"
+    "G0 X130 Y178\n"
+    "G1 X167 Y178\n"
+    "G1 X167 Y181\n"
+    "G1 X130 Y181\n"
+    "G1 X130 Y178\n"
+    "G0 X135 Y181\n"
+    "G1 X162 Y181\n"
+    "G1 X162 Y200\n"
+    "G1 X135 Y200\n"
+    "G1 X135 Y181\n"
+    "done\n";
+  char * line = strtok((char*)buffer.c_str(), "\n");
   while (line != NULL) {
     if (strcmp(line, "done") == 0) {
       break;
     }
     if (strncmp(line, "G0", 2) == 0) {
-      int X = 0, Y = 0;
-      sscanf(line, "G0 X%d Y%d", &X, &Y);
-      G0(X, Y);
+      float X = 0, Y = 0;
+      sscanf(line, "G0 X%f Y%f", &X, &Y);
+      G0((int)X, (int)Y);
     } else if (strncmp(line, "G1", 2) == 0) {
-      int X = 0, Y = 0;
-      sscanf(line, "G1 X%d Y%d", &X, &Y);
-      G1(X, Y);
+      float X = 0, Y = 0;
+      sscanf(line, "G1 X%f Y%f", &X, &Y);
+      G1((int)X, (int)Y);
     } else if (strncmp(line, "G2", 2) == 0) {
-      int X = 0, Y = 0, I = 0, J = 0;
-      sscanf(line, "G2 X%d Y%d I%d J%d", &X, &Y, &I, &J);
-      G2(X, Y, I, J);
+      float X = 0, Y = 0, I = 0, J = 0;
+      sscanf(line, "G2 X%f Y%f I%f J%f", &X, &Y, &I, &J);
+      G2((int)X, (int)Y, (int)I, (int)J);
     } else if (strncmp(line, "G3", 2) == 0) {
-      int X = 0, Y = 0, I = 0, J = 0;
-      sscanf(line, "G3 X%d Y%d I%d J%d", &X, &Y, &I, &J);
-      G3(X, Y, I, J);
+      float X = 0, Y = 0, I = 0, J = 0;
+      sscanf(line, "G3 X%f Y%f I%f J%f", &X, &Y, &I, &J);
+      G3((int)X, (int)Y, (int)I, (int)J);
     }
     line = strtok(NULL, "\n");
   }
