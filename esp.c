@@ -190,6 +190,8 @@ void G3(int X,int Y,int I,int J) {
 
 void loop() {
   String buffer = Serial.readString();
+  // 아무것도 안 받으면 continue로 루프 처음으로
+  if (buffer.length() == 0) continue;
   char *line = strtok((char*)buffer.c_str(), "\n");
   while (line != NULL) {
     if (strcmp(line, "done") == 0) {
