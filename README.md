@@ -1,7 +1,5 @@
 #### Advanced User Experience: Connecting LLMs to Physical Machines
 
----
-
 ## 1. Program Installation
 
 To use this project, you’ll need access to an LLM API and a compatible machine (such as an ESP32 or Arduino). For best results, we recommend using a paid API key.
@@ -12,8 +10,6 @@ This project uses the ChatGPT API by default, but you can easily modify a few li
 
 - `index.py` — Run this on your PC.
 - `esp.c` — Upload this to your ESP32 or Arduino using the Arduino IDE.
-
----
 
 ## 2. How to Run the Program
 
