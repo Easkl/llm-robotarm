@@ -16,10 +16,10 @@ const int rightStepPin = 23;
 const int rightDIRPin = 19;
 const int leftStepPin = 21;
 const int leftDIRPin = 18;
-int CurrentX = 0;
-int CurrentY = 0;
-const int XMAX = 1300;
-const int YMAX = 950;
+float CurrentX = 0;
+float CurrentY = 0;
+const float XMAX = 1300.0;
+const float YMAX = 950.0;
 AccelStepper rightStepper(AccelStepper::DRIVER, rightStepPin, rightDIRPin);
 AccelStepper leftStepper(AccelStepper::DRIVER, leftStepPin, leftDIRPin);
 
@@ -36,15 +36,15 @@ void setup() {
   pen.attach(servoPin, MIN_US, MAX_US);
 }
 
-void Gcodeline(int Xgoal, int Ygoal) {
+void Gcodeline(float Xgoal, float Ygoal) {
   if (Xgoal > XMAX) Xgoal = XMAX;
   if (Xgoal < 0)    Xgoal = 0;
   if (Ygoal > YMAX) Ygoal = YMAX;
   if (Ygoal < 0)    Ygoal = 0;
-  int dx = Xgoal - CurrentX;
-  int dy = Ygoal - CurrentY;
-  long rightMove = dx - dy;
-  long leftMove  = dx + dy;
+  float dx = Xgoal - CurrentX;
+  float dy = Ygoal - CurrentY;
+  long rightMove = (long)lround(dx - dy);
+  long leftMove  = (long)lround(dx + dy);
   long targets[2] = {
     rightStepper.currentPosition() + rightMove,
     leftStepper.currentPosition()  + leftMove
@@ -143,48 +143,48 @@ void Pen(int signal) {
   }
 }
 
-void G0(int X,int Y) {
+void G0(float X, float Y) {
   Pen(0);
   delay(200);
-  Gcodeline(5*X,5*Y);
+  Gcodeline(5.0f*X, 5.0f*Y);
   delay(200);
 }
 
-void G1(int X,int Y) {
+void G1(float X, float Y) {
   if (penStatus == 0) {
     Pen(1);
     delay(200);
-    Gcodeline(5*X,5*Y);
+    Gcodeline(5.0f*X, 5.0f*Y);
     delay(200);
   }
   else if (penStatus == 1) {
-    Gcodeline(5*X,5*Y);
+    Gcodeline(5.0f*X, 5.0f*Y);
     delay(200);
   }
 }
 
-void G2(int X,int Y,int I,int J) {
+void G2(float X, float Y, float I, float J) {
   if (penStatus == 0) {
     Pen(1);
     delay(200);
-    GcodeCW(5*X, 5*Y, 5*I, 5*J);
+    GcodeCW(5.0f*X, 5.0f*Y, 5.0f*I, 5.0f*J);
     delay(200);
   }
   else if (penStatus == 1) {
-    GcodeCW(5*X, 5*Y, 5*I, 5*J);
+    GcodeCW(5.0f*X, 5.0f*Y, 5.0f*I, 5.0f*J);
     delay(200);
   }
 }
 
-void G3(int X,int Y,int I,int J) {
+void G3(float X, float Y, float I, float J) {
   if (penStatus == 0) {
     Pen(1);
     delay(200);
-    GcodeCCW(5*X, 5*Y, 5*I, 5*J);
+    GcodeCCW(5.0f*X, 5.0f*Y, 5.0f*I, 5.0f*J);
     delay(200);
   }
   else if (penStatus == 1) {
-    GcodeCCW(5*X, 5*Y, 5*I, 5*J);
+    GcodeCCW(5.0f*X, 5.0f*Y, 5.0f*I, 5.0f*J);
     delay(200);
   }
 }
@@ -244,19 +244,19 @@ void loop() {
     if (strncmp(line, "G0", 2) == 0) {
       float X = 0, Y = 0;
       sscanf(line, "G0 X%f Y%f", &X, &Y);
-      G0((int)X, (int)Y);
+      G0(X, Y);
     } else if (strncmp(line, "G1", 2) == 0) {
       float X = 0, Y = 0;
       sscanf(line, "G1 X%f Y%f", &X, &Y);
-      G1((int)X, (int)Y);
+      G1(X, Y);
     } else if (strncmp(line, "G2", 2) == 0) {
       float X = 0, Y = 0, I = 0, J = 0;
       sscanf(line, "G2 X%f Y%f I%f J%f", &X, &Y, &I, &J);
-      G2((int)X, (int)Y, (int)I, (int)J);
+      G2(X, Y, I, J);
     } else if (strncmp(line, "G3", 2) == 0) {
       float X = 0, Y = 0, I = 0, J = 0;
       sscanf(line, "G3 X%f Y%f I%f J%f", &X, &Y, &I, &J);
-      G3((int)X, (int)Y, (int)I, (int)J);
+      G3(X, Y, I, J);
     }
     line = strtok(NULL, "\n");
   }
