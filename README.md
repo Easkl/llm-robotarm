@@ -1,10 +1,43 @@
-# llm-robotarm
+# Advanced User Experience: Connecting LLMs to Physical Machines
 
-robotarm controlled by llm(gpt-5 or more).
+## 1. Program Installation
 
-1. cmd를 실행한 뒤 실행할 프로그램이 있는 파일 주소를 복사한다
-2. 콘솔창에
-   cd 파일주소
-   입력
-3. set OPENAI_API_KEY=api key
-   를 이 프로그램 실행하기 전에 입력해야 에러 안뜸
+To use this project, you’ll need access to an LLM API and a compatible machine (such as an ESP32 or Arduino). For best results, we recommend using a paid API key.
+
+This project uses the ChatGPT API by default, but you can easily modify a few lines to use a different provider. Check the commit history for examples.
+
+**Project Structure:**
+
+- `index.py` — Run this on your PC.
+- `esp.c` — Upload this to your ESP32 or Arduino using the Arduino IDE.
+
+## 2. How to Run the Program
+
+1. Open your command prompt (CMD) on Windows, or Terminal on Mac.
+2. Navigate to the folder containing `index.py`:
+
+   ```
+   cd path/to/your/project
+   ```
+
+3. Set your LLM API key as an environment variable:
+
+   ```
+   set OPENAI_API_KEY=yourapikey
+   ```
+
+   _(On Mac/Linux, use `export OPENAI_API_KEY=yourapikey` instead.)_
+
+4. **Edit the serial port setting in `index.py`:**
+
+   - Open `index.py` in a text editor.
+   - Find the line that looks like `ser = serial.Serial('COMx', ...)` (Windows) or `'/dev/ttyUSBx'` (Mac/Linux).
+   - Change `'COMx'` to your actual port name (e.g., `'COM3'` for Windows, `'/dev/ttyUSB0'` for Mac/Linux).
+   - You can check your port in the Arduino IDE (Tools > Port) or Device Manager.
+
+5. Upload `esp.c` to your ESP32 or Arduino using the Arduino IDE.
+6. Run `index.py` on your PC.
+
+---
+
+Feel free to check the commit history for more details or troubleshooting tips. If you have any questions, open an issue or contact the maintainer.
