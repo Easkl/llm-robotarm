@@ -6,18 +6,17 @@ from colorama import Fore, Style, init
 
 init(autoreset=True)
 
-# def checkGcodeStatus(ser):
-#     while True:
-#         recv = ser.readline().decode('utf-8').strip()
-#         if recv == "ok":
-#             break
+def checkGcodeStatus(ser):
+    while True:
+        recv = ser.readline().decode('utf-8').strip()
+        if recv == "ok":
+            break
 
-# ser = serial.Serial(port ='COM8', #장치관리자에서 포트는 매번 수정해줄 것.
-#                     baudrate=115200, 
-#                     timeout=None) 
+ser = serial.Serial(port ='COM5', #장치관리자에서 포트는 매번 수정해줄 것.
+                    baudrate=115200, 
+                    timeout=None) 
 
-rules = """
-You are a G-code generator for a 2D plotter. Follow these rules strictly:
+rules = """You are a G-code generator for a 2D plotter. Follow these rules strictly:
 
 1. Units: millimeters (mm) only.
 2. Canvas: 297 mm (X) × 210 mm (Y). Origin (0,0) is at the bottom-left corner.
@@ -31,13 +30,18 @@ You are a G-code generator for a 2D plotter. Follow these rules strictly:
    - G3 X.. Y.. I.. J.. : counterclockwise arc.
    - I, J are offsets from the start point to the arc center.
    - If arc end = start, interpret as a full circle.
+   - arcs with a central angle that exceed 180 degrees are allowed if necessary.
    - I=0 and J=0 is forbidden.
 6. One command per line. Do not add comments, explanations, or extra text.
 7. Only emit valid G-code lines. Do not include feed rates (F), tool changes (T), extrusion (E), spindle/heater commands (M3/M5/M104/M140), or any unsupported commands.
-8. Each command is sent line by line over serial. Wait for “ok” from the device before sending the next line.
-9. Output must be G-code lines only. Absolutely no additional text, headers, or commentary.
-10. And if you are completed with the drawing, append "done" at the end of your output.
-cf)그리고 내가 어떤 상황에서도 gcode로만 대답하라고 하긴 했는데 너가 자율적으로 판단해서 gcode로 대답하지 못하거나 적절하지 않다고 생각하면 다른 출력을 해도 돼 근데 실제로 동작하는 명령은 전부 gcode로 대답해야겠지 만약 gcode가 아닌 대답이 있으면 그건 시리얼로 보내면 안되니까 너가 쓸 대답 앞에 "NOT_GCODE" 라고 붙여줘.
+8. Each command is sent line by line over serial. 
+9. Do not have to print G0 X0 Y0 (the origin) on the first line.
+10. Output must be G-code lines only. Absolutely no additional text, headers, or commentary.
+11. And if you are completed with the drawing, append "done" at the end of your output.
+12. There is no need for G90 operations. So that you 'should' operate every drawings by starting from the origin.
+cf)
+그리고 내가 어떤 상황에서도 gcode로만 대답하라고 하긴 했지만, 자율적인 판단 하에 gcode로 대답하지 못하거나 적절하지 않다고 생각하면 다른 출력을 해도 돼 
+만약 gcode가 아닌 대답이 있으면 너가 쓸 대답 앞에 "NOT_GCODE" 라고 붙여줘.
 """
 inputHistory = []
 outputHistory = []
@@ -66,5 +70,5 @@ while True:
         continue
     outputHistory.append(answer)
     print(f"{Fore.YELLOW}{answer}{Style.RESET_ALL}")
-    # ser.write((answer + "\n").encode('utf-8'))  # 전체 명령을 한 번에 전송
-    # checkGcodeStatus(ser)  # ok 받을 때까지 대기
+    ser.write((answer + "\n").encode('utf-8'))  # 전체 명령을 한 번에 전송
+    checkGcodeStatus(ser)  # ok 받을 때까지 대기
